@@ -35,7 +35,7 @@ public class WordCount extends Configured implements Tool {
     public static class Map extends Mapper<LongWritable ,  Text ,  Text ,  IntWritable > {
         private final static IntWritable one = new IntWritable(1);
         private Text word = new Text();
-        private static final Pattern WORD_BOUNDARY = Pattern.compile(" \\ s* \\ b \\ s* ");
+        private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
 
         public void map(LongWritable offset, Text lineText, Context context)
                 throws IOException, InterruptedException {
