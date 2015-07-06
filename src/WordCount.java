@@ -14,44 +14,46 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 
 public class WordCount extends Configured implements Tool {
-    public static void main( String[] args) throws  Exception {
-        int res  = ToolRunner .run( new WordCount(), args);
-        System .exit(res);
+    public static void main(String[] args) throws Exception {
+        int res  = ToolRunner.run(new WordCount(), args);
+        System.exit(res);
     }
 
-    public int run( String[] args) throws  Exception {
-        Job job  = Job .getInstance(getConf(), " wordcount ");
-        job.setJarByClass( this .getClass());
-        FileInputFormat.addInputPaths(job, String.valueOf(new Path(args[0])));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    public int run(String[] args) throws  Exception {
+        Job job  = Job.getInstance(getConf(), "wordcount"); // name of your job. It needs for logs.
+        job.setJarByClass( this.getClass());
+        FileInputFormat.addInputPaths(job, String.valueOf(new Path(args[0]))); // input folder
+        FileOutputFormat.setOutputPath(job, new Path(args[1])); // output folder. Must not exists before the start!
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
+//        job.setNumReduceTasks(1);
+
+        // for your homework you need to change lines below
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
+        // till this line
 
-        return job.waitForCompletion( true)  ? 0 : 1;
+        return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    public static class Map extends Mapper<LongWritable ,  Text ,  Text ,  IntWritable > {
-        private final static IntWritable one = new IntWritable(1);
-        private Text word = new Text();
+    public static class Map extends Mapper<LongWritable, Text, Text, IntWritable>{
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
 
         public void map(LongWritable offset, Text lineText, Context context)
                 throws IOException, InterruptedException {
             String line = lineText.toString();
-            Text currentWord = new Text();
+            Text currentWord;
             for (String word : WORD_BOUNDARY.split(line)) {
                 if (word.isEmpty()) {
                     continue;
                 }
                 currentWord = new Text(word);
-                context.write(currentWord, one);
+                context.write(currentWord, new IntWritable(1));
             }
         }
     }
 
-        public static class Reduce extends Reducer<Text ,  IntWritable ,  Text ,  IntWritable > {
+        public static class Reduce extends Reducer<Text,  IntWritable,  Text,  IntWritable> {
             @Override
             public void reduce(Text word, Iterable<IntWritable> counts, Context context)
                     throws IOException, InterruptedException {
