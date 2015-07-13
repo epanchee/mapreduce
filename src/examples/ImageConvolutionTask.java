@@ -1,5 +1,10 @@
+package examples;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.File;
 import java.io.IOException;
 
@@ -8,7 +13,22 @@ public class ImageConvolutionTask {
     public static class Convolution {
 
         public static BufferedImage processImage(BufferedImage img) throws IOException {
-            return null;
+            float ninth = 1.0f / 9.0f;
+            float[] blurKernel = {
+                    ninth, ninth, ninth,
+                    ninth, ninth, ninth,
+                    ninth, ninth, ninth
+            };
+
+            float[] edgeKernel = {
+                    0.0f, -1.0f, 0.0f,
+                    -1.0f, 4.0f, -1.0f,
+                    0.0f, -1.0f, 0.0f
+            };
+
+            BufferedImageOp blur = new ConvolveOp(new Kernel(3, 3, edgeKernel));
+            BufferedImage dest = blur.filter(img, null);
+            return dest;
         }
 
     }

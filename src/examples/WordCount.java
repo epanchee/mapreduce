@@ -1,3 +1,5 @@
+package examples;
+
 import java.io.IOException;
 import java.util.regex.Pattern;
 import org.apache.hadoop.conf.Configured;
