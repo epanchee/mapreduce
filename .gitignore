@@ -6,3 +6,4 @@ images/out
 out
 build
 *.jar
+target
